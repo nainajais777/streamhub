@@ -1,3 +1,4 @@
+//schema.ts
 //import { pgTable, pgEnum, bigint, varchar, text, boolean, timestamp } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import { pgTable, pgEnum, bigint, smallint, varchar, text, boolean, integer, timestamp, primaryKey, check, uniqueIndex } from "drizzle-orm/pg-core";
