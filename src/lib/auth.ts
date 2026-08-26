@@ -7,20 +7,20 @@ export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "pg",
     schema: schema,
-    usePlural: true, // humari tables plural hain: users, sessions, accounts
+    usePlural: true, 
   }),
   advanced: {
     database: {
-      generateId: false,   // ye naya add karo
+      generateId: false,   
     },
   },
   user: {
     fields: {
-      name: "username",      // Better Auth ka "name" -> humara "username"
-      image: "avatarUrl",    // Better Auth ka "image" -> humara "avatarUrl"
+      name: "username",     
+      image: "avatarUrl",    
     },
     additionalFields: {
-      role: { type: "string", input: false }, // read-only, khud change nahi kar sakte signup se
+      role: { type: "string", input: false }, 
       isSuspended: { type: "boolean", input: false },
     },
   },

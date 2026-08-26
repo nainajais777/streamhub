@@ -3,6 +3,7 @@ import cors from "cors";
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth.js";
 import { videosRouter } from "./routes/videos.js";
+import { followsRouter } from "./routes/follows.js";
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.get("/health", (req, res) => {
 });
 
 app.use("/api/videos", videosRouter);
+app.use("/api/follows", followsRouter);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {

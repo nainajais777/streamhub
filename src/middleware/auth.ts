@@ -30,3 +30,19 @@ export async function requireCreator(req: any, res: any, next: any) {
     res.status(500).json({ error: "Something went wrong" });
   }
 }
+export async function requireTargetIsCreator(req: any, res: any, next: any) {
+  try{
+  const [targetCreatorProfile] = await db
+  .select()
+  .from(creatorProfiles)
+  .where(eq(creatorProfiles.userId, req.body.creatorId))
+  .limit(1);
+
+if (!targetCreatorProfile) {
+  return res.status(403).json({ error: "You can only follow creators" });
+}
+    next();
+  } catch (err) {
+    res.status(500).json({ error: "Something went wrong" });
+  }
+}
