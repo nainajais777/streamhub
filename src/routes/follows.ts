@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { db } from "../db/index.js";
-import { follows } from "../db/schema.js";
+import { follows,users } from "../db/schema.js";
+import { eq } from "drizzle-orm";
 import { requireAuth, requireTargetIsCreator } from "../middleware/auth.js";
 
 export const followsRouter = Router();
@@ -22,4 +23,37 @@ followsRouter.post("/", requireAuth, requireTargetIsCreator, async (req: any, re
   }
   res.status(500).json({ error: "Something went wrong" });
 }
+});
+followsRouter.get("/:creatorId/followers", async (req, res) => {
+  try {
+    const creatorId = Number(req.params.creatorId);
+
+    const followers = await db
+      .select({ followerId: follows.followerId, username: users.username })
+      .from(follows)
+      .innerJoin(users, eq(follows.followerId, users.id))
+      .where(eq(follows.creatorId, creatorId));
+
+    res.json({ followers, count: followers.length });
+  } catch (err: any) {
+    console.log("FOLLOWERS ERROR:", err);
+    console.log("CAUSE:", err.cause);
+    res.status(500).json({ error: "Something went wrong" });
+  }
+});
+
+followsRouter.get("/:userId/following", requireAuth, async (req: any, res) => {
+  const targetId = Number(req.params.userId);
+
+  if (Number(req.user.id) !== targetId) {
+    return res.status(403).json({ error: "You can only view your own following list" });
+  }
+
+  const following = await db
+    .select({ creatorId: follows.creatorId, username: users.username })
+    .from(follows)
+    .innerJoin(users, eq(follows.creatorId, users.id))
+    .where(eq(follows.followerId, targetId));
+
+  res.json({ following, count: following.length });
 });
