@@ -2,8 +2,8 @@
 //import { pgTable, pgEnum, bigint, varchar, text, boolean, timestamp } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import { pgTable, pgEnum, bigint, smallint, varchar, text, boolean, integer, timestamp, primaryKey, check, uniqueIndex } from "drizzle-orm/pg-core";
+import { unique } from "drizzle-orm/pg-core"; 
 
-// ENUM define karna — jaisa humne decide kiya tha, sirf 2 values
 export const userRoleEnum = pgEnum("user_role", ["user", "admin"]);
 
 export const users = pgTable("users", {
@@ -33,7 +33,7 @@ export const creatorProfiles = pgTable("creator_profiles", {
 });
 
 
-// Naya ENUM — video ke status ke liye
+
 export const videoStatusEnum = pgEnum("video_status", ["processing", "ready", "failed"]);
 
 export const categories = pgTable("categories", {
@@ -58,7 +58,7 @@ export const videos = pgTable("videos", {
 });
 
 
-// Naye ENUMs
+
 export const subscriptionStatusEnum = pgEnum("subscription_status", ["active", "canceled", "past_due"]);
 export const paymentTypeEnum = pgEnum("payment_type", ["tip", "subscription_charge"]);
 export const paymentStatusEnum = pgEnum("payment_status", ["succeeded", "failed", "refunded"]);
@@ -89,7 +89,8 @@ export const subscriptions = pgTable("subscriptions", {
   canceledAt: timestamp("canceled_at", { withTimezone: true }),
   renewsAt: timestamp("renews_at", { withTimezone: true }).notNull(),
 }, (table) => [
-  { uniqueSubscriberCreator: { columns: [table.subscriberId, table.creatorId], unique: true } },
+  //{ uniqueSubscriberCreator: { columns: [table.subscriberId, table.creatorId], unique: true } },
+    unique("unique_subscriber_creator").on(table.subscriberId, table.creatorId),
 ]);
 
 export const payments = pgTable("payments", {

@@ -57,6 +57,13 @@
       "when": 1786173982220,
       "tag": "0007_bored_firebird",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1787928623715,
+      "tag": "0008_bent_vulcan",
+      "breakpoints": true
     }
   ]
 }
