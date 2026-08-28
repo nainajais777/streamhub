@@ -4,6 +4,7 @@ import { toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth.js";
 import { videosRouter } from "./routes/videos.js";
 import { followsRouter } from "./routes/follows.js";
+import { subscriptionsRouter } from "./routes/subscription.js";
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.get("/health", (req, res) => {
 
 app.use("/api/videos", videosRouter);
 app.use("/api/follows", followsRouter);
+app.use("/api/subscriptions",subscriptionsRouter);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {

@@ -3,7 +3,8 @@ node_modules/
 .env.*
 dist/
 build/
-follow-attempt.json
-viewer-attempt.json
-attack-video.json
-test-video.json
+*-attempt.json
+subscribe-*.json
+attack-*.json
+test-*.json
+viewer-*.json
