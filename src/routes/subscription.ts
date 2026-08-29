@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { db } from "../db/index.js";
-import { subscriptions, users } from "../db/schema.js";
+import { subscriptions, users,pendingCheckouts } from "../db/schema.js";
 import {razorpay } from "../lib/razorpay.js";
 import { eq } from "drizzle-orm";
 import { requireAuth, requireTargetIsCreator } from "../middleware/auth.js";
@@ -31,6 +31,13 @@ subscriptionsRouter.post("/checkout", requireAuth, requireTargetIsCreator, async
       amount: 50000, // amount in paise
       currency: "INR",
       receipt: `sub_${req.user.id}_${req.body.creatorId}_${Date.now()}`,
+    });
+     
+    await db.insert(pendingCheckouts).values({
+      orderId:order.id,
+      subscriberId:req.user.id,
+      creatorId:req.body.creatorId,
+      status:"pending"
     });
     res.status(201).json(order);
   }catch (err: any) {
