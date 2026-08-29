@@ -1,15 +1,12 @@
 import { Router } from "express";
 import { db } from "../db/index.js";
 import { subscriptions, users } from "../db/schema.js";
+import {razorpay } from "../lib/razorpay.js";
 import { eq } from "drizzle-orm";
 import { requireAuth, requireTargetIsCreator } from "../middleware/auth.js";
 export const subscriptionsRouter = Router();
 
 subscriptionsRouter.post("/", requireAuth, requireTargetIsCreator, async (req: any, res) => {
-  // 1. calculate renewsAt (30 days from now) — you already have this line
-  // 2. insert into subscriptions — which fields, from where?
-  // 3. handle the duplicate case (remember UNIQUE(subscriberId, creatorId) — same error code as follows)
-  // 4. respond
 const renewsAt = new Date();
 renewsAt.setDate(renewsAt.getDate() + 30);
 try{
@@ -26,4 +23,19 @@ try{
   }
   res.status(500).json({ error: "Something went wrong" });
 }
+});
+
+subscriptionsRouter.post("/checkout", requireAuth, requireTargetIsCreator, async (req: any, res) => {
+  try{
+    const order = await razorpay.orders.create({
+      amount: 50000, // amount in paise
+      currency: "INR",
+      receipt: `sub_${req.user.id}_${req.body.creatorId}_${Date.now()}`,
+    });
+    res.status(201).json(order);
+  }catch (err: any) {
+    console.log("RAZORPAY ORDER ERROR:", err);
+    res.status(500).json({ error: "Something went wrong" });
+  }
+
 });
