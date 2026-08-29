@@ -64,6 +64,13 @@
       "when": 1787928623715,
       "tag": "0008_bent_vulcan",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1788004257959,
+      "tag": "0009_white_micromacro",
+      "breakpoints": true
     }
   ]
 }

@@ -1,8 +1,7 @@
 //schema.ts
 //import { pgTable, pgEnum, bigint, varchar, text, boolean, timestamp } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
-import { pgTable, pgEnum, bigint, smallint, varchar, text, boolean, integer, timestamp, primaryKey, check, uniqueIndex } from "drizzle-orm/pg-core";
-import { unique } from "drizzle-orm/pg-core"; 
+import { pgTable, pgEnum, bigint, smallint, varchar, text, boolean, integer, timestamp, primaryKey, check, uniqueIndex ,unique} from "drizzle-orm/pg-core";
 
 export const userRoleEnum = pgEnum("user_role", ["user", "admin"]);
 
@@ -107,12 +106,19 @@ export const payments = pgTable("payments", {
   amountCents: integer("amount_cents").notNull(),
   currency: varchar("currency", { length: 3 }).notNull().default("USD"),
   status: paymentStatusEnum("status").notNull(),
-  stripeEventId: varchar("stripe_event_id", { length: 255 }).unique(),
+ gatewayEventId: varchar("gateway_event_id", { length: 255 }).unique(),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 }, (table) => [
   check("positive_amount", sql`${table.amountCents} > 0`),
 ]);
-
+export const pendingCheckouts = pgTable("pending_checkouts", {
+  id: bigint("id", { mode: "number" }).primaryKey().generatedAlwaysAsIdentity(),
+  orderId: varchar("order_id", { length: 255 }).notNull().unique(),
+  subscriberId: bigint("subscriber_id", { mode: "number" }).notNull().references(() => users.id, { onDelete: "restrict" }),
+  creatorId: bigint("creator_id", { mode: "number" }).notNull().references(() => users.id, { onDelete: "restrict" }),
+  status: varchar("status", { length: 20 }).notNull().default("pending"), // pending | completed | failed
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
 
 export const liveStreamStatusEnum = pgEnum("live_stream_status", ["live", "ended"]);
 
