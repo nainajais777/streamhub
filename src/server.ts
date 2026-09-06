@@ -5,7 +5,7 @@ import { auth } from "./lib/auth.js";
 import { videosRouter } from "./routes/videos.js";
 import { followsRouter } from "./routes/follows.js";
 import { subscriptionsRouter } from "./routes/subscription.js";
-
+import{webhooksRouter} from "./routes/webhooks.js"; 
 const app = express();
 
 app.use(cors({
@@ -14,7 +14,7 @@ app.use(cors({
 }));
 
 app.all("/api/auth/*splat", toNodeHandler(auth));
-
+app.use("/api/webhooks", webhooksRouter);
 app.use(express.json());
 
 app.get("/health", (req, res) => {
