@@ -6,6 +6,7 @@ import { videosRouter } from "./routes/videos.js";
 import { followsRouter } from "./routes/follows.js";
 import { subscriptionsRouter } from "./routes/subscription.js";
 import{webhooksRouter} from "./routes/webhooks.js"; 
+import { liveStreamsRouter } from "./routes/livestream.js";
 const app = express();
 
 app.use(cors({
@@ -24,6 +25,7 @@ app.get("/health", (req, res) => {
 app.use("/api/videos", videosRouter);
 app.use("/api/follows", followsRouter);
 app.use("/api/subscriptions",subscriptionsRouter);
+app.use("/api/livestreams",liveStreamsRouter);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
