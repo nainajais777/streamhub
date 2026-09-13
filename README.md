@@ -42,11 +42,17 @@ yet built.
   constraint rather than an application-level check alone).
 - **Subscriptions** — creation with duplicate protection via a database-level
   unique constraint (`subscriber_id`, `creator_id`).
-- **Payments (Razorpay)** — order creation (`POST /api/subscriptions/checkout`)
-  and a `pending_checkouts` tracking table that records every checkout attempt
-  before payment confirmation, so a webhook can be reconciled back to the
-  correct subscriber/creator pair. *(Webhook signature verification and
-  payment completion handler are in progress — see below.)*
+- **Payments (Razorpay)** — order creation (`POST /api/subscriptions/checkout`),
+  a `pending_checkouts` tracking table reconciling checkout attempts to
+  subscriber/creator pairs, and a webhook handler
+  (`POST /api/webhooks/razorpay`) verifying HMAC-SHA256 signatures against
+  the raw request body before trusting any payload. On a verified event,
+  subscription creation, payment recording, and the creator's earnings
+  update all happen inside a single database transaction, so a partial
+  failure can never leave the data inconsistent. Idempotency
+  (`payments.gateway_event_id` unique) and duplicate-safe processing
+  (missing/already-processed orders return `404`, never a false success)
+  are both handled.
 
 ## Designed but not yet implemented
 
@@ -70,7 +76,10 @@ data/auth/payments-focused.
 - **Idempotency for payment webhooks** — `payments.gateway_event_id` is
   unique, so a retried webhook delivery (a documented, expected behavior of
   payment gateways) can never create a duplicate charge.
-
+-- **The webhook handler bypasses Express's default JSON body parser** for
+  this one route, since signature verification requires the exact raw
+  request bytes — a re-serialized copy of the same JSON is not guaranteed
+  to be byte-identical.
 ## Setup
 
 ```bash
