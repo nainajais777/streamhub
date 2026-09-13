@@ -19,8 +19,11 @@ const event=JSON.parse(rawBody.toString());
 const orderId=event.payload.order_id;
 
 const [pending]=await db.select().from(pendingCheckouts).where(eq(pendingCheckouts.orderId,orderId));
-if (pending) {
-  await db.transaction(async (tx) => {
+if (!pending) {
+  return res.status(404).json({ error: "Order not found" });
+}
+
+await db.transaction(async (tx) => {
     const renewsAt = new Date();
     renewsAt.setDate(renewsAt.getDate() + 30);
 
@@ -49,7 +52,7 @@ if (pending) {
       .set({ status: "completed" })
       .where(eq(pendingCheckouts.orderId, orderId));
   });
-}
+
 
 res.status(200).json({ received: true });
 }
