@@ -57,7 +57,9 @@ yet built.
   and ending (`PATCH /api/live-streams/:id/end`), with a Postgres partial
   unique index physically preventing a creator from having two simultaneous
   live streams, and an ownership check ensuring only the stream's own
-  creator can end it.
+  creator can end it.`live_streams.peakViewerCount` remains at its default (0) — 
+  populating it requires real-time viewer tracking via Redis, which depends on 
+  the WebSocket/chat feature (not yet built).
 
 ## Designed but not yet implemented
 
