@@ -203,6 +203,8 @@ export const reactions = pgTable("reactions", {
     "exactly_one_target",
     sql`(${table.videoId} IS NOT NULL) != (${table.liveStreamId} IS NOT NULL)`
   ),
+    unique("unique_user_video_reaction").on(table.userId, table.videoId),
+  unique("unique_user_stream_reaction").on(table.userId, table.liveStreamId),
 ]);
 
 // --- Moderation ---

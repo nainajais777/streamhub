@@ -8,6 +8,7 @@ import { subscriptionsRouter } from "./routes/subscription.js";
 import{webhooksRouter} from "./routes/webhooks.js"; 
 import { liveStreamsRouter } from "./routes/livestream.js";
 import { commentsRouter } from "./routes/comments.js";
+import { reactionsRouter } from "./routes/reactions.js";
 const app = express();
 
 app.use(cors({
@@ -28,6 +29,7 @@ app.use("/api/follows", followsRouter);
 app.use("/api/subscriptions",subscriptionsRouter);
 app.use("/api/livestreams",liveStreamsRouter);
 app.use("/api/comments", commentsRouter);
+app.use("/api/reactions", reactionsRouter);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {

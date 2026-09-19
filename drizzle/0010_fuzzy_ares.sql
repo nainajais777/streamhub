@@ -1,0 +1,2 @@
+ALTER TABLE "reactions" ADD CONSTRAINT "unique_user_video_reaction" UNIQUE("user_id","video_id");--> statement-breakpoint
+ALTER TABLE "reactions" ADD CONSTRAINT "unique_user_stream_reaction" UNIQUE("user_id","live_stream_id");
