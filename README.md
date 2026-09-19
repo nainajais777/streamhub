@@ -60,11 +60,21 @@ yet built.
   creator can end it.`live_streams.peakViewerCount` remains at its default (0) — 
   populating it requires real-time viewer tracking via Redis, which depends on 
   the WebSocket/chat feature (not yet built).
+  - **Comments** — public listing per video (`GET /api/comments?videoId=`),
+  authenticated creation, and soft-delete with ownership checks (deleted
+  comments are hidden from listings but remain in the database for
+  moderation history, not permanently purged).
+- **Reactions** — one reaction per user per target (video or live stream),
+  enforced via two separate database-level unique constraints rather than
+  one combined constraint, since Postgres treats `NULL` as never equal
+  to another `NULL` in uniqueness checks — reacting again replaces the
+  existing reaction (upsert via `ON CONFLICT DO UPDATE`) instead of
+  creating a duplicate.
 
 ## Designed but not yet implemented
 
 The full schema (`src/db/schema.ts`) includes `tags`, `video_tags`,
-`categories`, `comments`, `reactions`, `chat_messages`,
+`categories`,`chat_messages`,
 `moderation_reports`, and `platform_bans` — each with real constraints and
 cascade-rule reasoning documented inline. These are designed but have no API
 routes built yet. Actual video file upload/transcoding, live streaming, and
