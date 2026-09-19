@@ -53,11 +53,16 @@ yet built.
   (`payments.gateway_event_id` unique) and duplicate-safe processing
   (missing/already-processed orders return `404`, never a false success)
   are both handled.
+  - **Live streams** — creator-only stream creation (`POST /api/live-streams`)
+  and ending (`PATCH /api/live-streams/:id/end`), with a Postgres partial
+  unique index physically preventing a creator from having two simultaneous
+  live streams, and an ownership check ensuring only the stream's own
+  creator can end it.
 
 ## Designed but not yet implemented
 
 The full schema (`src/db/schema.ts`) includes `tags`, `video_tags`,
-`categories`, `comments`, `reactions`, `live_streams`, `chat_messages`,
+`categories`, `comments`, `reactions`, `chat_messages`,
 `moderation_reports`, and `platform_bans` — each with real constraints and
 cascade-rule reasoning documented inline. These are designed but have no API
 routes built yet. Actual video file upload/transcoding, live streaming, and
@@ -95,4 +100,4 @@ npm run dev                   # http://localhost:4000
 ## Author
 
 Built by [Naina Jaiswal](https://github.com/nainajais777) as a hands-on
-backend learning project.
+backend project.
