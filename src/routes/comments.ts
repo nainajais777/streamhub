@@ -20,12 +20,16 @@ commentsRouter.post("/", requireAuth, async (req: any, res) => {
   if (!req.body.videoId || !req.body.content) {
     return res.status(400).json({ error: "videoId and content are required" });
   }
-  const [newComment] = await db.insert(comments).values({
-    videoId: req.body.videoId,
-    userId: req.user.id,
-    content: req.body.content,
-  }).returning();
-  res.status(201).json(newComment);
+  try {
+    const [newComment] = await db.insert(comments).values({
+      videoId: req.body.videoId,
+      userId: req.user.id,
+      content: req.body.content,
+    }).returning();
+    res.status(201).json(newComment);
+  } catch (err: any) {
+    res.status(400).json({ error: "Invalid video ID" });
+  }
 });
 
 // DELETE /api/comments/:id — only the comment's own author can delete (soft delete)
