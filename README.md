@@ -70,7 +70,12 @@ yet built.
   to another `NULL` in uniqueness checks — reacting again replaces the
   existing reaction (upsert via `ON CONFLICT DO UPDATE`) instead of
   creating a duplicate.
-
+- **Video upload** — creator-only, ownership-checked file upload
+  (`POST /api/videos/:id/upload`) via multer, saving locally and linking
+  the file path back to the video record. Cloud storage (S3/R2) and
+  `ffmpeg` transcoding are not yet built — `status` stays `processing`
+  until that pipeline exists, and files are currently written to local
+  disk rather than durable cloud storage.
 ## Designed but not yet implemented
 
 The full schema (`src/db/schema.ts`) includes `tags`, `video_tags`,
