@@ -10,3 +10,4 @@ test-*.json
 viewer-*.json
 webhook-test.json
 empty-body.json
+uploads/

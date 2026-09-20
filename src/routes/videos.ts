@@ -4,7 +4,7 @@ import { db } from "../db/index.js";
 import { videos, users } from "../db/schema.js";
 import { eq, and, lt, desc } from "drizzle-orm";
 import { requireAuth, requireCreator } from "../middleware/auth.js";
-
+import {upload} from "../lib/upload.js";
 export const videosRouter = Router();
 
 videosRouter.get("/", async (req, res) => {
@@ -69,4 +69,24 @@ videosRouter.post("/", requireAuth, requireCreator, async (req: any, res) => {
     .returning();
 
   res.status(201).json(newVideo);
+});
+
+videosRouter.post("/:id/upload", requireAuth, requireCreator, upload.single("video"), async (req: any, res) => {
+  const videoId = Number(req.params.id);
+  if(!req.file)
+  {
+    return res.status(400).json({error:"No file Uploaded"});
+  }
+  const [video]=await db.select().from(videos).where(eq(videos.id,videoId));
+  if(!video)
+  return res.status(404).json({error:"Video not found"});
+  if(video.creatorId!== Number(req.user.id))
+  {
+    return res.status(403).json({error:"You can only upload your own videos"});
+  }
+  // req.file will contain info about the uploaded file, once multer processes it
+  const [updated] = await db.update(videos).set({videoUrl:req.file.path}).where(eq(videos.id, videoId)).returning();
+  res.status(200).json(updated);
+  console.log(req.file); 
+  res.json({ received: true });
 });
