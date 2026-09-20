@@ -11,3 +11,7 @@ viewer-*.json
 webhook-test.json
 empty-body.json
 uploads/
+bad-comment.json
+reaction1.json
+reaction2.json
+test-video.mp4
