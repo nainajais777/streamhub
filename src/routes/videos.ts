@@ -5,8 +5,9 @@ import { videos, users } from "../db/schema.js";
 import { eq, and, lt, desc } from "drizzle-orm";
 import { requireAuth, requireCreator } from "../middleware/auth.js";
 import {upload} from "../lib/upload.js";
-export const videosRouter = Router();
+import { transcodeQueue } from "../lib/queue.js";
 
+export const videosRouter = Router();
 videosRouter.get("/", async (req, res) => {
   const cursorParam = req.query.cursor as string | undefined;
 
@@ -86,6 +87,7 @@ videosRouter.post("/:id/upload", requireAuth, requireCreator, upload.single("vid
   }
   // req.file will contain info about the uploaded file, once multer processes it
   const [updated] = await db.update(videos).set({videoUrl:req.file.path}).where(eq(videos.id, videoId)).returning();
+  await transcodeQueue.add("transcode", { videoId: videoId, filePath: req.file.path });
   res.status(200).json(updated);
   console.log(req.file); 
   res.json({ received: true });
