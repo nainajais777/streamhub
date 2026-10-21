@@ -18,8 +18,8 @@ yet built.
   immediately, rather than waiting for a token to expire)
 - **Razorpay** — payment gateway integration (order creation + webhook-based
   confirmation)
-- **Docker Compose** — local Postgres (Redis provisioned for future caching,
-  not yet used by any route)
+- **Docker Compose** —- **Docker Compose** — local Postgres and Redis (Redis currently backs the
+  BullMQ video-transcoding queue; caching and real-time features are not yet built)
 
 ## What's implemented and tested
 
