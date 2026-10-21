@@ -89,6 +89,6 @@ videosRouter.post("/:id/upload", requireAuth, requireCreator, upload.single("vid
   const [updated] = await db.update(videos).set({videoUrl:req.file.path}).where(eq(videos.id, videoId)).returning();
   await transcodeQueue.add("transcode", { videoId: videoId, filePath: req.file.path });
   res.status(200).json(updated);
-  console.log(req.file); 
-  res.json({ received: true });
+ // console.log(req.file); 
+  //res.json({ received: true });
 });
