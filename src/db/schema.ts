@@ -234,9 +234,13 @@ export const platformBans = pgTable("platform_bans", {
     .notNull()
     .references(() => users.id, { onDelete: "restrict" }),
   reason: text("reason").notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-});
-
+  liftedAt: timestamp("lifted_at", { withTimezone: true }),
+createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+}, (table) => [
+  uniqueIndex("one_active_ban_per_user")
+    .on(table.userId)
+    .where(sql`${table.liftedAt} IS NULL`),
+]);
 export const sessions = pgTable("sessions", {
   //id: text("id").primaryKey(),
     id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),

@@ -9,8 +9,17 @@ export async function requireAuth(req: any, res: any, next: any) {
   if (!session) {
     return res.status(401).json({ error: "Not authenticated" });
   }
-
+ if (session.user.isSuspended) {
+    return res.status(403).json({ error: "Account suspended" });
+  }
   req.user = session.user;
+  next();
+}
+
+export function requireAdmin(req: any, res: any, next: any) {
+  if (req.user.role !== "admin") {
+    return res.status(403).json({ error: "Admin access required" });
+  }
   next();
 }
 

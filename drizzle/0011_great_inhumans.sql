@@ -1,0 +1,2 @@
+ALTER TABLE "platform_bans" ADD COLUMN "lifted_at" timestamp with time zone;--> statement-breakpoint
+CREATE UNIQUE INDEX "one_active_ban_per_user" ON "platform_bans" USING btree ("user_id") WHERE "platform_bans"."lifted_at" IS NULL;
