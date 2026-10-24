@@ -10,6 +10,8 @@ import { liveStreamsRouter } from "./routes/livestream.js";
 import { commentsRouter } from "./routes/comments.js";
 import { reactionsRouter } from "./routes/reactions.js";
 import { reportsRouter } from "./routes/reports.js";
+import { adminRouter } from "./routes/admin.js";
+
 const app = express();
 
 app.use(cors({
@@ -32,6 +34,7 @@ app.use("/api/livestreams",liveStreamsRouter);
 app.use("/api/comments", commentsRouter);
 app.use("/api/reactions", reactionsRouter);
 app.use("/api/reports", reportsRouter);
+app.use("/api/admin", adminRouter);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
